@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "title": "The $1.58 Billion Mystery",
+    "category": "BIG WINS",
+    "read_time": "6 min",
+    "intro_text": "In August 2023, a single ticket in Neptune Beach, Florida, shattered records by winning a $1.58 billion Mega Millions jackpot. The atmosphere in the city was electric...",
+    "locked_content": "The winner used a legal trust to stay anonymous. Strategy is everything in the USA. Always sign your ticket immediately.",
+    "image_url": "https://images.pexels.com/photos/259027/pexels-photo-259027.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "id": 2,
+    "title": "The Luckiest Store in Utah",
+    "category": "MYTHS",
+    "read_time": "5 min",
+    "intro_text": "Utah is one of the few states where the lottery is illegal. But this hasn't stopped its residents from dreaming big...",
+    "locked_content": "This store is KJ's Bar and Grill in Malad, Idaho. Statistically, more tickets sold means more winners. The owner says the secret is just keeping the coffee hot.",
+    "image_url": "https://images.pexels.com/photos/77081/pexels-photo-77081.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "id": 3,
+    "title": "The Lottery That Built America",
+    "category": "HISTORY",
+    "read_time": "7 min",
+    "intro_text": "Long before modern taxes, the early American colonies were struggling for survival. Jamestown was on the brink of collapse...",
+    "locked_content": "The lottery was a massive success, and the profits were used to ship supplies and settlers. Even Harvard and Yale were funded this way.",
+    "image_url": "https://images.pexels.com/photos/459762/pexels-photo-459762.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "id": 4,
+    "title": "The Curse of the Jackpots",
+    "category": "MYTHS",
+    "read_time": "6 min",
+    "intro_text": "Many people dream of winning, but history is full of winners who claimed that the money destroyed their lives...",
+    "locked_content": "The truth is that most winners fail due to lack of financial education. Hire a fiduciary financial advisor before telling your relatives.",
+    "image_url": "https://images.pexels.com/photos/210600/pexels-photo-210600.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "id": 5,
+    "title": "Funding Lady Liberty",
+    "category": "HISTORY",
+    "read_time": "5 min",
+    "intro_text": "The Statue of Liberty is a symbol of freedom, but its pedestal was a financial nightmare. The US government refused to pay...",
+    "locked_content": "A massive public fundraising campaign was launched, including local lotteries. Even the most iconic monument in America owes its existence to lottery players.",
+    "image_url": "https://images.pexels.com/photos/356844/pexels-photo-356844.jpeg?auto=compress&cs=tinysrgb&w=600"
+  }
+]
