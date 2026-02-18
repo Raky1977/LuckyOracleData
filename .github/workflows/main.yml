@@ -1,0 +1,24 @@
+name: Update Lottery Data
+on:
+  schedule:
+    - cron: '0 * * * *' # Gira ogni ora
+  workflow_dispatch: # Ti permette di avviarlo a mano
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Run script
+        run: python update_jackpots.py
+      - name: Commit and push
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add lottery_data.json
+          git commit -m "Auto-update jackpots" || exit 0
+          git push
