@@ -2,15 +2,21 @@ import json
 import datetime
 import time
 
+def get_next_draw_date():
+    # Powerball estrae Lunedì (0), Mercoledì (2), Sabato (5) alle 23:00 ET
+    now = datetime.datetime.now()
+    # Simuliamo il calcolo della prossima estrazione (molto semplificato)
+    # Aggiunge 3 giorni alla data attuale per far sì che il timer sia sempre vivo
+    next_draw = now + datetime.timedelta(days=3)
+    return int(next_draw.timestamp() * 1000)
+
 def update_data():
-    # In futuro qui metteremo lo scraping reale. 
-    # Per ora simuliamo i dati per testare l'app.
-    next_draw = int(time.time() * 1000) + (3600 * 4 * 1000) # Prossima estrazione tra 4 ore
-    
+    # Qui in futuro metteremo lo scraping dei siti USA
+    # Per ora automatizziamo la data per tenere vivo il timer
     data = {
-        "powerball_jackpot": "$520 MILLION",
-        "mega_jackpot": "$1.2 BILLION",
-        "next_draw_timestamp": next_draw,
+        "powerball_jackpot": "$560 MILLION",
+        "mega_jackpot": "$1.5 BILLION",
+        "next_draw_timestamp": get_next_draw_date(),
         "last_update": datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     }
     
