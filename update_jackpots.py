@@ -14,17 +14,18 @@ def get_jackpot_from_source(url, pattern):
         req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req, timeout=30) as response:
             html = response.read().decode('utf-8', errors='ignore')
+            # Cerchiamo il pattern ignorando maiuscole/minuscole e spazi strani
             found = re.search(pattern, html, re.IGNORECASE | re.DOTALL)
             if found:
                 res = found.group(1).replace('&nbsp;', ' ').strip().upper()
-                res = re.sub(r'<.*?>', '', res)
+                res = re.sub(r'<.*?>', '', res) # Rimuove eventuali tag HTML residui
                 return f"${res}" if not res.startswith('$') else res
     except Exception as e:
         print(f"Errore su {url}: {e}")
     return None
 
 def update_data():
-    # --- LOGICA POWERBALL ---
+    # --- LOGICA POWERBALL (Sembrava già funzionare, manteniamo le fonti) ---
     pb_live = get_jackpot_from_source(
         "https://www.lottery.net/powerball", 
         r'class="jackpot">.*?\$([0-9.,]+\s?(?:Million|Billion|M|B))'
@@ -35,35 +36,43 @@ def update_data():
             r'Powerball.*?\$([0-9,.]+\s?(?:Million|Billion))'
         )
 
-    # --- LOGICA MEGA MILLIONS ---
-    # Proviamo Lottery.net con pattern specifico
+    # --- NUOVA LOGICA MEGA MILLIONS POTENZIATA ---
+    # 1. Proviamo Lottery.net con pattern flessibile per lo spazio tra "Mega" e "Millions"
     mega_live = get_jackpot_from_source(
         "https://www.lottery.net/mega-millions", 
-        r'class="jackpot">.*?\$([0-9.,]+\s?(?:Million|Billion|M|B))'
+        r'Mega\s*Millions.*?\$([0-9.,]+\s?(?:Million|Billion|M|B))'
     )
     
-    # Se fallisce, proviamo USA TODAY
+    # 2. Se fallisce, proviamo USA TODAY con pattern flessibile
     if not mega_live:
         mega_live = get_jackpot_from_source(
             "https://data.usatoday.com/lottery/", 
-            r'Mega\s?Millions.*?\$([0-9,.]+\s?(?:Million|Billion))'
+            r'Mega\s*Millions.*?\$([0-9,.]+\s?(?:Million|Billion))'
         )
     
-    # Se fallisce ancora, proviamo LotteryPost
+    # 3. Se fallisce ancora, proviamo Lotto.net (fonte alternativa molto pulita)
+    if not mega_live:
+        mega_live = get_jackpot_from_source(
+            "https://www.lotto.net/mega-millions",
+            r'class="jackpot">.*?\$([0-9.,]+\s?[A-Z]+)'
+        )
+
+    # 4. Ultima spiaggia: LotteryPost
     if not mega_live:
         mega_live = get_jackpot_from_source(
             "https://www.lotterypost.com/game/159", 
             r'(\$[0-9,.]+(?:\s|&nbsp;)?(?:Million|Billion|M|B))'
         )
 
-    # TIMESTAMP E CALCOLI
+    # TIMESTAMP E CALCOLI DATA
     now = datetime.datetime.now()
     next_ts = int((now + datetime.timedelta(days=2)).replace(hour=23, minute=0).timestamp() * 1000)
 
-    # COSTRUZIONE JSON
+    # COSTRUZIONE JSON CON NUOVI VALORI DI FALLBACK PER TEST
+    # Se vedi 251 o 421 significa che ha usato questi valori fissi (FALLBACK)
     data = {
-        "powerball_jackpot": pb_live if pb_live else "$249 MILLION",
-        "mega_jackpot": mega_live if mega_live else "$420 MILLION",
+        "powerball_jackpot": pb_live if pb_live else "$251 MILLION",
+        "mega_jackpot": mega_live if mega_live else "$421 MILLION",
         "next_draw_timestamp": next_ts,
         "last_update": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
         "status": "success" if (pb_live and mega_live) else "partial_fallback"
