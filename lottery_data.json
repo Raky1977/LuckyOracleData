@@ -1,7 +1,7 @@
 {
-    "powerball_jackpot": "$111 MILLION",
-    "mega_jackpot": "$222 MILLION",
-    "next_draw_timestamp": 1772578812977,
+    "powerball_jackpot": "$258 MILLION",
+    "mega_jackpot": "$450 MILLION",
+    "next_draw_timestamp": 1772578849660,
     "last_update": "2026-03-01 12:27",
-    "status": "partial_fallback"
+    "status": "gov_api_error"
 }
