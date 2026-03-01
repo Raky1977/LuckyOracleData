@@ -1,63 +1,61 @@
 import json
 import datetime
 import urllib.request
+import re
 
-def get_json_data(url):
+def fetch_raw(url):
     try:
-        # Header "iPhone" - Molto più difficile da bloccare per i siti USA
+        # Mimiamo un browser mobile iPhone - raramente bloccato dai widget
         headers = {
             'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Referer': 'https://nylottery.ny.gov/'
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
         }
         req = urllib.request.Request(url, headers=headers)
-        with urllib.request.urlopen(req, timeout=20) as response:
-            return json.loads(response.read().decode('utf-8'))
+        with urllib.request.urlopen(req, timeout=25) as response:
+            return response.read().decode('utf-8', errors='ignore')
     except Exception as e:
-        print(f"Errore: {e}")
-        return None
+        print(f"Errore su {url}: {e}")
+        return ""
+
+def extract_jackpot(text, game_keyword):
+    # Cerca la cifra (es: 250) seguita da Million/Billion vicino al nome del gioco
+    pattern = rf'{game_keyword}.*?\$([0-9.,]+\s?(?:Million|Billion|M|B))'
+    match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+    if match:
+        return f"${match.group(1).upper()}"
+    return None
 
 def update_data():
-    # --- FONTE 1: NY LOTTERY (Governativo, JSON pulito) ---
-    # New York pubblica un JSON con tutti i jackpot attuali
-    ny_data = get_json_data("https://nylottery.ny.gov/api/v2/jackpots")
+    # FONTE 1: Portale News USA (USA Today Network) - Molto stabile
+    raw_html = fetch_raw("https://www.lohud.com/lottery/")
     
-    pb_live = None
-    mega_live = None
+    pb_live = extract_jackpot(raw_html, "Powerball")
+    mega_live = extract_jackpot(raw_html, "Mega Millions")
 
-    if ny_data:
-        for game in ny_data:
-            game_name = game.get('gameName', '').lower()
-            if 'powerball' in game_name:
-                pb_live = f"${game.get('jackpotAmount', '')} MILLION"
-            elif 'mega' in game_name:
-                mega_live = f"${game.get('jackpotAmount', '')} MILLION"
-
-    # --- FONTE 2 (Fallback): TEXAS LOTTERY RSS/JSON ---
+    # FONTE 2 (Fallback): Un sito di risultati "leggero"
     if not pb_live or not mega_live:
-        # Usiamo l'endpoint di un aggregatore che fornisce JSON per widget
-        backup_data = get_json_data("https://www.lotterypost.com/api/v1/jackpots")
-        # Nota: Se questo richiede API Key, usiamo il metodo della New York Lottery che è pubblico.
+        raw_html_alt = fetch_raw("https://www.lotteryusa.com/powerball/")
+        if not pb_live: pb_live = extract_jackpot(raw_html_alt, "Powerball")
+        raw_html_alt2 = fetch_raw("https://www.lotteryusa.com/mega-millions/")
+        if not mega_live: mega_live = extract_jackpot(raw_html_alt2, "Mega Millions")
 
     # TIMESTAMP
     now = datetime.datetime.now()
     next_ts = int((now + datetime.timedelta(days=2)).replace(hour=23, minute=0).timestamp() * 1000)
 
-    # OUTPUT FINALE
-    # Usiamo valori di "sicurezza" realistici solo se i siti governativi sono giù
+    # OUTPUT
     data = {
-        "powerball_jackpot": pb_live if pb_live else "$258 MILLION",
-        "mega_jackpot": mega_live if mega_live else "$450 MILLION",
+        "powerball_jackpot": pb_live if pb_live else "$259 MILLION", # Valore spia aggiornato
+        "mega_jackpot": mega_live if mega_live else "$451 MILLION", # Valore spia aggiornato
         "next_draw_timestamp": next_ts,
         "last_update": now.strftime("%Y-%m-%d %H:%M"),
-        "status": "success" if (pb_live and mega_live) else "gov_api_error"
+        "status": "success" if (pb_live and mega_live) else "partial_fallback"
     }
 
     with open('lottery_data.json', 'w') as f:
         json.dump(data, f, indent=4)
     
-    print(f"Aggiornamento completato: PB={pb_live}, MEGA={mega_live}")
+    print(f"Update: PB={pb_live}, MEGA={mega_live}")
 
 if __name__ == "__main__":
     update_data()
