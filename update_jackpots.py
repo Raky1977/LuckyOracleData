@@ -59,6 +59,19 @@ def update_data():
             r'Powerball.*?\$([0-9,.]+\s?Million)'
         )
 
+    # Modifica questa riga nel file .py su GitHub
+mega_live = get_jackpot_from_source(
+    "https://www.lottery.net/mega-millions", 
+    r'jackpot">\$?([0-9.,]+\s?(?:Million|Billion|M|B))'
+)
+
+# Se non va, prova questa come alternativa subito sotto
+if not mega_live:
+    mega_live = get_jackpot_from_source(
+        "https://www.lotterypost.com/game/159", 
+        r'(\$[0-9,.]+(?:\s|&nbsp;)?(?:Million|Billion|M|B))'
+    )
+
     # TIMESTAMP
     now = datetime.datetime.now()
     next_ts = int((now + datetime.timedelta(days=2)).replace(hour=23, minute=0).timestamp() * 1000)
