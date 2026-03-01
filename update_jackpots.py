@@ -4,15 +4,18 @@ import urllib.request
 
 def get_json_data(url):
     try:
+        # Header "iPhone" - Molto più difficile da bloccare per i siti USA
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Accept': 'application/json'
+            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Referer': 'https://nylottery.ny.gov/'
         }
         req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req, timeout=20) as response:
             return json.loads(response.read().decode('utf-8'))
     except Exception as e:
-        print(f"Errore su {url}: {e}")
+        print(f"Errore: {e}")
         return None
 
 def update_data():
