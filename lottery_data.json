@@ -1,5 +1,5 @@
 {
-    "powerball_jackpot": "$20 MILLION",
+    "powerball_jackpot": "$46 MILLION",
     "mega_jackpot": "$533 MILLION",
     "pick3": "$500",
     "pick4": "$5,000",
@@ -7,7 +7,7 @@
     "luckyforlife": "$1,000/DAY",
     "california_lotto": "$7 MILLION",
     "texas_lotto": "$5.25 MILLION",
-    "next_draw_timestamp": 1773183615137,
-    "last_update": "2026-03-08 04:02",
+    "next_draw_timestamp": 1773183642881,
+    "last_update": "2026-03-08 05:36",
     "status": "success"
 }
