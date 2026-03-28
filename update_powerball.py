@@ -3,18 +3,19 @@ import json
 from collections import Counter
 
 def update_powerball():
-    # URL ufficiale Socrata per New York Powerball
-    url = "https://data.ny.gov/resource/d6yy-dbnr.json?$limit=1000"
-    print(f"Tentativo di scaricamento da: {url}")
+    # URL aggiornato e più stabile
+    url = "https://data.ny.gov/resource/d6yy-dbnr.json"
+    params = {"$limit": 1000}
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+    
+    print(f"Tentativo di scaricamento dati Powerball...")
     
     try:
-        response = requests.get(url, timeout=30)
+        response = requests.get(url, params=params, headers=headers, timeout=30)
         response.raise_for_status()
         data = response.json()
-
-        if not data:
-            print("Errore: Nessun dato ricevuto dall'API")
-            return
 
         all_numbers = []
         all_pb = []
@@ -46,14 +47,13 @@ def update_powerball():
             "frequent_pb": [n for n, c in Counter(all_pb).most_common(5)]
         }
 
-        # Salvataggio forzato
         with open("powerball_stats.json", "w") as f:
             json.dump(stats, f, indent=4)
         
-        print("File powerball_stats.json creato con successo!")
+        print("SUCCESSO: powerball_stats.json creato!")
 
     except Exception as e:
-        print(f"ERRORE CRITICO: {e}")
+        print(f"ERRORE CRITICO POWERBALL: {e}")
 
 if __name__ == "__main__":
     update_powerball()
