@@ -2,11 +2,11 @@ name: Update Lottery Data
 
 on:
   schedule:
-    - cron: '0 * * * *' # Gira ogni ora
-  workflow_dispatch: # Ti permette di avviarlo a mano cliccando il tasto
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 permissions:
-  contents: write # FONDAMENTALE: permette a GitHub di salvare i file
+  contents: write
 
 jobs:
   build:
@@ -32,6 +32,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add lottery_data.json powerball_stats.json
-          git commit -m "Auto-update lottery data" || exit 0
+          # Questo comando aggiunge TUTTI i file .json nuovi o modificati
+          git add *.json 
+          git commit -m "Auto-update all lottery data" || exit 0
           git push
