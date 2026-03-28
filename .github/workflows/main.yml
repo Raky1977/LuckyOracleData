@@ -6,21 +6,21 @@ on:
   workflow_dispatch: # Ti permette di avviarlo a mano
 
 permissions:
-  contents: write # Permette al bot di salvare i file nel tuo repository
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.11'
 
-      - name: Install dependencies
+       Pel name: Install dependencies
         run: pip install requests
 
       - name: Run scripts
