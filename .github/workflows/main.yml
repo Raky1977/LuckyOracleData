@@ -3,10 +3,10 @@ name: Update Lottery Data
 on:
   schedule:
     - cron: '0 * * * *' # Gira ogni ora
-  workflow_dispatch: # Ti permette di avviarlo a mano
+  workflow_dispatch: # Ti permette di avviarlo a mano cliccando il tasto
 
 permissions:
-  contents: write
+  contents: write # FONDAMENTALE: permette a GitHub di salvare i file
 
 jobs:
   build:
@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.11'
 
-       Pel name: Install dependencies
+      - name: Install dependencies
         run: pip install requests
 
       - name: Run scripts
