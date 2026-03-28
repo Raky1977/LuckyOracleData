@@ -1,0 +1,1 @@
+{"status": "error", "reason": "HTTPSConnectionPool(host='games.api.lottery.com', port=443): Max retries exceeded with url: /api/v2.0/results/games/powerball/draws?limit=50 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1016)')))"}
