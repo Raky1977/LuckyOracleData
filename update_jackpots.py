@@ -1,24 +1,27 @@
 import json
 import datetime
-import urllib.request
+import requests # Più affidabile di urllib per evitare i blocchi 403
 import re
 
 def fetch_raw(url):
     try:
-        # User-Agent iPhone: la nostra chiave per il successo
+        # Manteniamo il tuo User-Agent iPhone vincente
         headers = {
             'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5'
         }
-        req = urllib.request.Request(url, headers=headers)
-        with urllib.request.urlopen(req, timeout=25) as response:
-            return response.read().decode('utf-8', errors='ignore')
+        # Usiamo requests con un timeout e headers corretti
+        response = requests.get(url, headers=headers, timeout=25)
+        response.raise_for_status() # Genera errore se 403 o 404
+        return response.text
     except Exception as e:
         print(f"Errore caricamento {url}: {e}")
         return ""
 
 def extract_jackpot(text, game_keyword):
-    # Regex robusta per catturare cifre tipo "$249 Million"
+    if not text: return None
+    # La tua Regex robusta
     pattern = rf'{game_keyword}.*?\$([0-9.,]+\s?(?:Million|Billion|M|B))'
     match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
     if match:
@@ -27,7 +30,6 @@ def extract_jackpot(text, game_keyword):
 
 def update_data():
     # --- FONTE PRINCIPALE (Lohud/USA Today) ---
-    # Funziona bene per Powerball, Mega Millions e Texas Lotto
     main_html = fetch_raw("https://www.lohud.com/lottery/")
     
     pb_live = extract_jackpot(main_html, "Powerball")
@@ -38,7 +40,7 @@ def update_data():
     ca_html = fetch_raw("https://www.calottery.com/jackpot-it")
     ca_lotto = extract_jackpot(ca_html, "SuperLotto Plus")
 
-    # Fallback per Powerball/Mega se Lohud fallisce (usando LotteryUSA)
+    # Fallback per Powerball/Mega se Lohud fallisce
     if not pb_live or not mega_live:
         if not pb_live:
             pb_live = extract_jackpot(fetch_raw("https://www.lotteryusa.com/powerball/"), "Powerball")
