@@ -22,6 +22,7 @@ jobs:
 
       - name: Run script
         run: python update_jackpots.py
+        python update_powerball.py
 
       - name: Commit and push
         run: |
