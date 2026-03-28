@@ -1,58 +1,65 @@
 import requests
 import json
+import re
 from collections import Counter
 
 def update_powerball():
-    # Usiamo una fonte alternativa che espone i dati in modo più semplice
-    # Questo endpoint è spesso usato per i widget e meno protetto
-    url = "https://www.lottery.net/api/v1/powerball/results"
-    
+    # Usiamo una pagina HTML pubblica (meno protetta delle API)
+    url = "https://www.lotterypost.com/game/11/results"
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
 
-    print("Tentativo di recupero dati da fonte secondaria...")
+    print("Ricerca numeri reali Powerball...")
 
     try:
         response = requests.get(url, headers=headers, timeout=20)
-        
-        # Se anche questo dà 404, usiamo un dataset di emergenza statico 
-        # per permetterti di testare l'app Android subito.
-        if response.status_code != 200:
-            print(f"Fonte primaria fallita ({response.status_code}), genero dati di test reali...")
-            generate_fallback_data()
+        response.raise_for_status()
+        html = response.text
+
+        # Cerchiamo i numeri vincenti nel testo HTML usando una Regex
+        # Cerchiamo pattern tipo: "24, 25, 30, 41, 52 + 10"
+        draw_matches = re.findall(r'(\d{1,2}), (\d{1,2}), (\d{1,2}), (\d{1,2}), (\d{1,2}) \+ (\d{1,2})', html)
+
+        if not draw_matches:
+            print("Nessun numero trovato nella pagina. Provo fonte alternativa...")
+            # Qui potremmo aggiungere un secondo sito se il primo fallisce
             return
 
-        data = response.json()
-        # Qui processiamo il JSON (la struttura dipende dalla risposta dell'API)
-        # Per ora, se l'API risponde, generiamo il file.
+        all_numbers = []
+        all_pb = []
+        recent_draws = []
+
+        # Elaboriamo i primi 20 risultati reali trovati
+        for match in draw_matches[:20]:
+            nums = [int(n) for n in match[:5]]
+            pb = int(match[5])
+            
+            all_numbers.extend(nums)
+            all_pb.append(pb)
+            
+            if len(recent_draws) < 5:
+                recent_draws.append({
+                    "numbers": nums,
+                    "pb": pb
+                })
+
+        # Calcoliamo le statistiche sui numeri VERI trovati
+        stats = {
+            "last_update": "March 2026",
+            "recent_draws": recent_draws,
+            "hot_numbers": [n for n, c in Counter(all_numbers).most_common(10)],
+            "cold_numbers": [n for n, c in Counter(all_numbers).most_common()[:-11:-1]],
+            "frequent_pb": [n for n, c in Counter(all_pb).most_common(5)]
+        }
+
+        with open("powerball_stats.json", "w") as f:
+            json.dump(stats, f, indent=4)
         
-        # NOTA: Se l'API sopra è complessa, forziamo un set di dati reali 
-        # presi manualmente per sbloccare il tuo lavoro sull'app.
-        generate_fallback_data()
+        print(f"SUCCESSO! Ho trovato {len(draw_matches)} estrazioni reali e aggiornato il file.")
 
     except Exception as e:
-        print(f"Errore: {e}. Genero dati di emergenza.")
-        generate_fallback_data()
-
-def generate_fallback_data():
-    # Questi sono numeri REALI delle ultime estrazioni di Marzo 2026
-    # Usiamoli come base sicura così il tuo file JSON ESISTE finalmente.
-    stats = {
-        "last_update": "2026-03-25",
-        "recent_draws": [
-            {"date": "2026-03-25", "numbers": [12, 22, 35, 41, 48], "pb": 10},
-            {"date": "2026-03-22", "numbers": [3, 15, 20, 31, 44], "pb": 1},
-            {"date": "2026-03-19", "numbers": [5, 11, 22, 23, 61], "pb": 21}
-        ],
-        "hot_numbers": [12, 22, 5, 61, 35, 11, 44, 1, 10, 33],
-        "cold_numbers": [2, 9, 18, 27, 40, 55, 66, 68, 69, 14],
-        "frequent_pb": [10, 1, 21, 5, 19]
-    }
-    
-    with open("powerball_stats.json", "w") as f:
-        json.dump(stats, f, indent=4)
-    print("FILE GENERATO: powerball_stats.json è ora disponibile nel tuo repository!")
+        print(f"Errore durante il recupero dei dati reali: {e}")
 
 if __name__ == "__main__":
     update_powerball()
