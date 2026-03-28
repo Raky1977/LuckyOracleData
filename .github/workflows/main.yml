@@ -28,11 +28,10 @@ jobs:
           python update_jackpots.py
           python update_powerball.py
 
-      - name: Commit and push
+- name: Commit and push
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          # Questo comando aggiunge TUTTI i file .json nuovi o modificati
-          git add *.json 
-          git commit -m "Auto-update all lottery data" || exit 0
+          git add --all
+          git commit -m "Update stats $(date)" || exit 0
           git push
