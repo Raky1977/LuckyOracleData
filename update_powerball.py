@@ -3,53 +3,44 @@ import json
 from collections import Counter
 
 def update_powerball():
-    # URL pulito senza parametri codificati male
-    url = "https://data.ny.gov/resource/d6yy-dbnr.json"
-    # Chiediamo i dati in modo esplicito tramite dizionario
-    params = {'$limit': 1000}
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-    }
+    # Usiamo un'API alternativa più "gentile" con i bot
+    url = "https://games.api.lottery.com/api/v2.0/results/games/powerball/draws"
+    params = {"limit": 50} # Prendiamo le ultime 50 estrazioni
     
-    print("Scaricamento dati Powerball in corso...")
+    print("Connessione all'API alternativa...")
     
     try:
-        # Passiamo i parametri separatamente per evitare il 404
-        response = requests.get(url, params=params, headers=headers, timeout=30)
-        
-        if response.status_code != 200:
-            print(f"Errore Server: {response.status_code}")
-            # Fallback: prova senza parametri se il limite dà fastidio
-            response = requests.get(url, headers=headers, timeout=30)
-            
+        response = requests.get(url, params=params, timeout=20)
         response.raise_for_status()
-        data = response.json()
+        draws = response.json()
 
         all_numbers = []
         all_pb = []
-        recent_draws = []
+        recent_list = []
 
-        for draw in data:
-            nums_str = draw.get("winning_numbers", "")
-            if not nums_str: continue
+        for draw in draws:
+            # Estraiamo i numeri dal formato specifico di questa API
+            results = draw.get("results", [])
+            if not results: continue
             
-            nums = [int(n) for n in nums_str.split()]
-            if len(nums) >= 6:
-                main_nums = nums[:5]
-                pb = nums[5]
+            # Di solito i primi 5 sono i numeri bianchi, l'ultimo è la Powerball
+            main_nums = [int(r.get("value")) for r in results if r.get("type") == "primary"]
+            pb_val = next((int(r.get("value")) for r in results if r.get("type") == "bonus"), None)
+            
+            if len(main_nums) == 5 and pb_val is not None:
                 all_numbers.extend(main_nums)
-                all_pb.append(pb)
+                all_pb.append(pb_val)
                 
-                if len(recent_draws) < 10:
-                    recent_draws.append({
-                        "date": draw.get("draw_date", "")[:10],
+                if len(recent_list) < 10:
+                    recent_list.append({
+                        "date": draw.get("drawDate", "")[:10],
                         "numbers": main_nums,
-                        "pb": pb
+                        "pb": pb_val
                     })
 
         stats = {
-            "last_update": data[0].get("draw_date", "")[:10] if data else "N/A",
-            "recent_draws": recent_draws,
+            "last_update": recent_list[0]["date"] if recent_list else "N/A",
+            "recent_draws": recent_list,
             "hot_numbers": [n for n, c in Counter(all_numbers).most_common(10)],
             "cold_numbers": [n for n, c in Counter(all_numbers).most_common()[:-11:-1]],
             "frequent_pb": [n for n, c in Counter(all_pb).most_common(5)]
@@ -58,10 +49,14 @@ def update_powerball():
         with open("powerball_stats.json", "w") as f:
             json.dump(stats, f, indent=4)
         
-        print("COMPLETATO: powerball_stats.json generato correttamente.")
+        print("FINALMENTE: powerball_stats.json generato!")
 
     except Exception as e:
-        print(f"ERRORE CRITICO: {e}")
+        print(f"ERRORE: {e}")
+        # Se fallisce anche questo, creiamo un file di emergenza per non far crashare l'app
+        fallback = {"status": "error", "reason": str(e)}
+        with open("powerball_stats.json", "w") as f:
+            json.dump(fallback, f)
 
 if __name__ == "__main__":
     update_powerball()
