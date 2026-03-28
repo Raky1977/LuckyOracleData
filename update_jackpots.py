@@ -30,7 +30,7 @@ def extract_jackpot(text, game_keyword):
 
 def update_data():
     # --- FONTE PRINCIPALE (Lohud/USA Today) ---
-    main_html = fetch_raw("https://www.lohud.com/lottery/")
+    main_html = fetch_raw("https://raw.githubusercontent.com/saurabhp75/powerball-result-crawler/master/data/latest.json")
     
     pb_live = extract_jackpot(main_html, "Powerball")
     mega_live = extract_jackpot(main_html, "Mega Millions")
