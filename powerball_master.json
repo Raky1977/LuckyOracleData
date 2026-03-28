@@ -1,0 +1,18 @@
+{
+  "jackpots": {
+    "powerball": "$166 MILLION",
+    "mega_millions": "$80 MILLION",
+    "lotto_texas": "$5.25 MILLION",
+    "california_superlotto": "$7 MILLION"
+  },
+  "stats": {
+    "last_update": "2026-03-28",
+    "hot_numbers": [12, 22, 35, 41, 48, 5, 61, 11, 44, 33],
+    "cold_numbers": [2, 9, 18, 27, 40, 55, 66, 68, 69, 14],
+    "frequent_pb": [10, 1, 21, 5, 19],
+    "recent_draws": [
+      {"date": "2026-03-25", "numbers": [12, 22, 35, 41, 48], "pb": 10},
+      {"date": "2026-03-22", "numbers": [3, 15, 20, 31, 44], "pb": 1}
+    ]
+  }
+}
