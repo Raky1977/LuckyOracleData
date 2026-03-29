@@ -1,7 +1,21 @@
-[
-  {"date": "20/03", "value": 450},
-  {"date": "23/03", "value": 520},
-  {"date": "26/03", "value": 600},
-  {"date": "29/03", "value": 750},
-  {"date": "01/04", "value": 825}
-]
+{
+  "stats": {
+    "average": "316.5M",
+    "record": "1.82B",
+    "draws_count": "157",
+    "wins": "8",
+    "current": "180M"
+  },
+  "trend": [
+    {"date": "25/02", "value": 20},
+    {"date": "01/03", "value": 45},
+    {"date": "04/03", "value": 62},
+    {"date": "08/03", "value": 85},
+    {"date": "11/03", "value": 105},
+    {"date": "15/03", "value": 128},
+    {"date": "18/03", "value": 145},
+    {"date": "22/03", "value": 162},
+    {"date": "25/03", "value": 175},
+    {"date": "29/03", "value": 180}
+  ]
+}
