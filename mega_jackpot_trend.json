@@ -1,0 +1,21 @@
+{
+  "stats": {
+    "average": "224M",
+    "record": "533M",
+    "draws_count": "10",
+    "wins": "0",
+    "current": "80M"
+  },
+  "trend": [
+    {"date": "24/02", "value": 438},
+    {"date": "27/02", "value": 458},
+    {"date": "03/03", "value": 473},
+    {"date": "06/03", "value": 496},
+    {"date": "10/03", "value": 533},
+    {"date": "13/03", "value": 50},
+    {"date": "17/03", "value": 60},
+    {"date": "20/03", "value": 50},
+    {"date": "24/03", "value": 60},
+    {"date": "27/03", "value": 70}
+  ]
+}
