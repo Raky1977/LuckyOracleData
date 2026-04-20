@@ -43,5 +43,50 @@
     "intro_text": "The Statue of Liberty is a symbol of freedom, but its pedestal was a financial nightmare. The US government refused to pay...",
     "locked_content": "A massive public fundraising campaign was launched, including local lotteries. Even the most iconic monument in America owes its existence to lottery players.",
     "image_url": "https://images.pexels.com/photos/356844/pexels-photo-356844.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "id": 6,
+    "title": "The $2.04 Billion Powerball Peak",
+    "category": "BIG WINS",
+    "read_time": "6 min",
+    "intro_text": "In November 2022, the world watched as the Powerball jackpot climbed to a dizzying $2.04 billion. The winning ticket was sold at a humble gas station in Altadena, California...",
+    "locked_content": "The winner, Edwin Castro, opted for the lump sum of $997.6 million. The gas station owner, Joe Chahayed, also received a $1 million bonus just for selling the winning ticket.",
+    "image_url": "https://images.pexels.com/photos/1550337/pexels-photo-1550337.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "id": 7,
+    "title": "The Double Lightning Strike",
+    "category": "MYTHS",
+    "read_time": "5 min",
+    "intro_text": "Statisticians say the odds of winning the lottery are astronomical, but some individuals seem to defy the laws of probability. Imagine winning a million dollars, and then doing it again...",
+    "locked_content": "A man in Delaware won two $100,000 jackpots in the same day from different scratch-off tickets. Experts call this 'independent events,' but locals just call him the luckiest man alive.",
+    "image_url": "https://images.pexels.com/photos/3483098/pexels-photo-3483098.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "id": 8,
+    "title": "Lotteries of the Wild West",
+    "category": "HISTORY",
+    "read_time": "7 min",
+    "intro_text": "In the 19th century, the American frontier was a land of risk. In many Western territories, lotteries were the primary engine for building schools, roads, and town halls...",
+    "locked_content": "The Louisiana State Lottery was so powerful it was called 'The Octopus.' It eventually led to federal bans because it became more influential than the state government itself.",
+    "image_url": "https://images.pexels.com/photos/439818/pexels-photo-439818.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "id": 9,
+    "title": "The Ghost of the 'Quick Pick'",
+    "category": "MYTHS",
+    "read_time": "6 min",
+    "intro_text": "Is it better to choose your own numbers or let the machine decide? This debate has divided lottery players for decades, with many claiming 'Quick Picks' are rigged...",
+    "locked_content": "Data shows that about 70% to 80% of lottery winners used Quick Picks. It’s not magic; it’s simply because the vast majority of players choose that option, increasing its frequency in wins.",
+    "image_url": "https://images.pexels.com/photos/395196/pexels-photo-395196.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "id": 10,
+    "title": "The Ticket in the Cookie Jar",
+    "category": "BIG WINS",
+    "read_time": "5 min",
+    "intro_text": "Millions of dollars in lottery prizes go unclaimed every year. One family in New Jersey almost lost a fortune simply because they forgot where they put a piece of paper...",
+    "locked_content": "The ticket was worth $273 million. It was found on a store counter after the player walked away without it. The clerk saved it, proving that honesty still exists in the quest for gold.",
+    "image_url": "https://images.pexels.com/photos/440731/pexels-photo-440731.jpeg?auto=compress&cs=tinysrgb&w=600"
   }
 ]
