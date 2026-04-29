@@ -88,5 +88,50 @@
     "intro_text": "Millions of dollars in lottery prizes go unclaimed every year. One family in New Jersey almost lost a fortune simply because they forgot where they put a piece of paper...",
     "locked_content": "The ticket was worth $273 million. It was found on a store counter after the player walked away without it. The clerk saved it, proving that honesty still exists in the quest for gold.",
     "image_url": "https://images.pexels.com/photos/440731/pexels-photo-440731.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "id": 11,
+    "title": "The 343 Million Dollar Mistake",
+    "category": "BIG WINS",
+    "read_time": "6 min",
+    "intro_text": "Lerynne West from Iowa was moving into her new home when she stopped for a coffee and a slice of pizza. She bought a Powerball ticket on a whim, but in the chaos of moving, she misplaced it...",
+    "locked_content": "The ticket was left on the floor of her sister's pickup truck. After realizing she won a share of the $687 million jackpot, she founded the Callum Foundation to honor her late grandson.",
+    "image_url": "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "id": 12,
+    "title": "The Lottery of Death",
+    "category": "HISTORY",
+    "read_time": "7 min",
+    "intro_text": "During the Vietnam War, the United States didn't use a random draw for prizes, but for personnel. The Selective Service System held 'draft lotteries' to determine who would be sent to combat...",
+    "locked_content": "The first draw was December 1, 1969. Capsules containing birth dates were pulled from a glass jar. September 14 was the first date drawn, changing the lives of thousands of young men instantly.",
+    "image_url": "https://images.pexels.com/photos/600622/pexels-photo-600622.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "id": 13,
+    "title": "The Fortune Cookie Miracle",
+    "category": "MYTHS",
+    "read_time": "5 min",
+    "intro_text": "In 2005, Powerball officials were stunned when 110 people across the USA all claimed the second-tier prize. Suspecting a massive fraud or a glitch, investigators began to dig deeper...",
+    "locked_content": "It wasn't a scam. All 110 winners had used the 'lucky numbers' found inside fortune cookies made by Wonton Food Inc. in Long Island City. The company had correctly predicted 5 out of 6 numbers.",
+    "image_url": "https://images.pexels.com/photos/1055272/pexels-photo-1055272.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "id": 14,
+    "title": "The Secret Syndicate",
+    "category": "BIG WINS",
+    "read_time": "6 min",
+    "intro_text": "Group play is a common strategy, but the 'Ocean's 16' story is legendary. Sixteen coworkers from an Ocean County vehicle maintenance garage in New Jersey decided to pool their money during a storm...",
+    "locked_content": "They won a share of a $448 million jackpot. Many of the winners were victims of Superstorm Sandy, using their winnings to rebuild homes that had been destroyed just months prior.",
+    "image_url": "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600"
+  },
+  {
+    "id": 15,
+    "title": "The Multi-State Tax Trap",
+    "category": "MYTHS",
+    "read_time": "5 min",
+    "intro_text": "Winning a multi-state lottery like Mega Millions doesn't mean you escape the local taxman. Depending on where you buy the ticket and where you live, the final payout can vary by millions...",
+    "locked_content": "States like New York take a heavy cut (up to 10.9%), while states like Florida, Texas, or California do not tax lottery winnings at the state level. Location is the ultimate multiplier.",
+    "image_url": "https://images.pexels.com/photos/128867/pexels-photo-128867.jpeg?auto=compress&cs=tinysrgb&w=600"
   }
 ]
