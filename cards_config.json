@@ -1,0 +1,25 @@
+{
+  "sets": [
+    {
+      "setId": "set_1",
+      "setName": "Set 1: Genesis",
+      "totalCards": 61,
+      "cards": [
+        {
+          "id": "card_set1_1",
+          "name": "Lucky #1",
+          "rarity": "COMMON",
+          "dropRate": 40.0,
+          "imageUrl": "https://raw.githubusercontent.com/Raky1977/LuckyOracleData/main/cards/card_set1_1.png"
+        },
+        {
+          "id": "card_set1_2",
+          "name": "Lucky #2",
+          "rarity": "RARE",
+          "dropRate": 10.0,
+          "imageUrl": "https://raw.githubusercontent.com/Raky1977/LuckyOracleData/main/cards/card_set1_2.png"
+        }
+      ]
+    }
+  ]
+}
