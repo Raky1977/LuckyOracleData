@@ -1,5 +1,5 @@
 {
-  "configVersion": 4,
+  "configVersion": 5,
   "minimumAppVersion": 1,
   "sets": [
     {
@@ -9,48 +9,12 @@
       "enabled": true,
       "cards": [
         {
-          "id": "genesis_23",
-          "number": 23,
-          "name": "Lucky #23",
-          "rarity": "COMMON",
-          "dropWeight": 100,
-          "imageUrl": "https://raw.githubusercontent.com/Raky1977/LuckyOracleData/main/cards/set1/card_set1_23.png",
-          "enabled": true
-        },
-        {
-          "id": "genesis_32",
-          "number": 32,
-          "name": "Lucky #32",
-          "rarity": "RARE",
-          "dropWeight": 25,
-          "imageUrl": "https://raw.githubusercontent.com/Raky1977/LuckyOracleData/main/cards/set1/card_set1_32.png",
-          "enabled": true
-        },
-        {
-          "id": "genesis_61",
-          "number": 61,
-          "name": "Lucky #61",
-          "rarity": "EPIC",
-          "dropWeight": 8,
-          "imageUrl": "https://raw.githubusercontent.com/Raky1977/LuckyOracleData/main/cards/set1/card_set1_61.png",
-          "enabled": true
-        },
-        {
           "id": "genesis_7",
           "number": 7,
           "name": "Lucky #7",
           "rarity": "LEGENDARY",
           "dropWeight": 2,
-          "imageUrl": "https://raw.githubusercontent.com/Raky1977/LuckyOracleData/main/cards/set1/card_set1_7.png",
-          "enabled": true
-        },
-        {
-          "id": "genesis_22",
-          "number": 22,
-          "name": "Lucky #22",
-          "rarity": "RARE",
-          "dropWeight": 25,
-          "imageUrl": "https://raw.githubusercontent.com/Raky1977/LuckyOracleData/main/cards/set1/card_set1_22.png",
+          "imageUrl": "https://raw.githubusercontent.com/Raky1977/LuckyOracleData/main/cards/set1/card_set1_7.webp",
           "enabled": true
         },
         {
@@ -63,12 +27,39 @@
           "enabled": true
         },
         {
+          "id": "genesis_22",
+          "number": 22,
+          "name": "Lucky #22",
+          "rarity": "RARE",
+          "dropWeight": 25,
+          "imageUrl": "https://raw.githubusercontent.com/Raky1977/LuckyOracleData/main/cards/set1/card_set1_22.webp",
+          "enabled": true
+        },
+        {
+          "id": "genesis_23",
+          "number": 23,
+          "name": "Lucky #23",
+          "rarity": "COMMON",
+          "dropWeight": 100,
+          "imageUrl": "https://raw.githubusercontent.com/Raky1977/LuckyOracleData/main/cards/set1/card_set1_23.webp",
+          "enabled": true
+        },
+        {
           "id": "genesis_27",
           "number": 27,
           "name": "Lucky #27",
           "rarity": "COMMON",
           "dropWeight": 100,
           "imageUrl": "https://raw.githubusercontent.com/Raky1977/LuckyOracleData/main/cards/set1/card_set1_27.webp",
+          "enabled": true
+        },
+        {
+          "id": "genesis_32",
+          "number": 32,
+          "name": "Lucky #32",
+          "rarity": "RARE",
+          "dropWeight": 25,
+          "imageUrl": "https://raw.githubusercontent.com/Raky1977/LuckyOracleData/main/cards/set1/card_set1_32.webp",
           "enabled": true
         },
         {
@@ -87,6 +78,15 @@
           "rarity": "UNCOMMON",
           "dropWeight": 55,
           "imageUrl": "https://raw.githubusercontent.com/Raky1977/LuckyOracleData/main/cards/set1/card_set1_45.webp",
+          "enabled": true
+        },
+        {
+          "id": "genesis_61",
+          "number": 61,
+          "name": "Lucky #61",
+          "rarity": "EPIC",
+          "dropWeight": 8,
+          "imageUrl": "https://raw.githubusercontent.com/Raky1977/LuckyOracleData/main/cards/set1/card_set1_61.webp",
           "enabled": true
         }
       ]
