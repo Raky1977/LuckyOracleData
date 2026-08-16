@@ -3,23 +3,20 @@
 Update ONLY Powerball and Mega Millions jackpot fields in lottery_data.json.
 
 Powerball:
-- Official Powerball site, using strict jackpot patterns.
-- NY Lottery official fallback.
+- Official Powerball site/page parsing (working behavior retained)
 
 Mega Millions:
-- Official Mega Millions homepage / winning numbers page.
-- STRICTLY parses only the value associated with:
-    "Next Estimated Jackpot"
-  (or localized equivalent)
-- It will NOT scan generic dollar amounts, so recent-winner prizes such as
-  $5 Million cannot be mistaken for the jackpot.
+- Official Mega Millions internal endpoint used by megamillions.com itself:
+  POST /cmspages/utilservice.asmx/GetLatestDrawData
+- Reads Jackpot.NextPrizePool from returned JSON.
 
-If a fresh value cannot be found, the previous valid value is preserved.
-All unrelated JSON keys remain untouched.
+If a fresh value cannot be fetched, the previous valid value is preserved.
+All unrelated lottery_data.json keys remain untouched.
 """
 
 from __future__ import annotations
 
+import gzip
 import html as html_lib
 import json
 import re
@@ -40,29 +37,13 @@ HEADERS = {
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/151.0.0.0 Safari/537.36"
     ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9,it;q=0.8",
-    "Cache-Control": "no-cache",
-    "Pragma": "no-cache",
+    "Accept-Language": "en-US,en;q=0.9",
 }
 
-POWERBALL_SOURCES = [
-    ("Powerball.com", "https://www.powerball.com/"),
-    ("NY Lottery Powerball", "https://nylottery.ny.gov/draw-game/?game=powerball"),
-]
+POWERBALL_URL = "https://www.powerball.com/"
+POWERBALL_FALLBACK = "https://nylottery.ny.gov/draw-game/?game=powerball"
 
-MEGA_SOURCES = [
-    ("MegaMillions homepage", "https://www.megamillions.com/"),
-    ("MegaMillions winning numbers", "https://www.megamillions.com/Winning-Numbers.aspx"),
-]
-
-
-def fetch(url: str) -> str:
-    print(f"Fetching: {url}")
-    r = requests.get(url, headers=HEADERS, timeout=TIMEOUT, allow_redirects=True)
-    print(f"HTTP {r.status_code} | {len(r.text)} chars | final={r.url}")
-    r.raise_for_status()
-    return r.text
+MEGA_ENDPOINT = "https://www.megamillions.com/cmspages/utilservice.asmx/GetLatestDrawData"
 
 
 def normalize_text(raw: str) -> str:
@@ -70,14 +51,7 @@ def normalize_text(raw: str) -> str:
     raw = raw.replace(r"\u0024", "$")
     raw = raw.replace(r"\u0020", " ")
     raw = raw.replace(r"\u002C", ",").replace(r"\u002c", ",")
-    raw = raw.replace("\\/", "/")
-    raw = re.sub(r"\s+", " ", raw)
-    return raw.strip()
-
-
-def soup_text(raw: str) -> str:
-    soup = BeautifulSoup(raw, "html.parser")
-    return normalize_text(" ".join(soup.stripped_strings))
+    return re.sub(r"\s+", " ", raw).strip()
 
 
 def format_amount(number: str, unit: str | None) -> str:
@@ -85,25 +59,29 @@ def format_amount(number: str, unit: str | None) -> str:
     unit = (unit or "").lower()
 
     if unit.startswith("b"):
-        if 0.01 <= value <= 10:
-            return f"${value:g} BILLION"
-        raise ValueError(f"Implausible billion jackpot: {value}")
-
+        return f"${value:g} BILLION"
     if unit.startswith("m"):
-        if 1 <= value <= 5000:
-            return f"${value:g} MILLION"
-        raise ValueError(f"Implausible million jackpot: {value}")
+        return f"${value:g} MILLION"
 
     if value >= 1_000_000_000:
         return f"${value / 1_000_000_000:g} BILLION"
     if value >= 1_000_000:
         return f"${value / 1_000_000:g} MILLION"
 
-    raise ValueError(f"Implausible jackpot amount: {value}")
+    raise ValueError(f"Unexpected jackpot amount: {value}")
+
+
+def fetch_html(url: str) -> str:
+    print(f"Fetching: {url}")
+    r = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
+    print(f"HTTP {r.status_code} | {len(r.text)} chars")
+    r.raise_for_status()
+    return r.text
 
 
 def extract_powerball(raw: str) -> str:
-    text = soup_text(raw)
+    soup = BeautifulSoup(raw, "html.parser")
+    text = normalize_text(" ".join(soup.stripped_strings))
 
     patterns = [
         r"Estimated\s+Jackpot\s*:?\s*\$?\s*([0-9][0-9,]*(?:\.\d+)?)\s*(Billion|Million)",
@@ -115,7 +93,6 @@ def extract_powerball(raw: str) -> str:
         if m:
             return format_amount(m.group(1), m.group(2))
 
-    # Raw HTML / embedded JSON fallback, still anchored to jackpot wording.
     raw_text = normalize_text(raw)
     for pat in patterns:
         m = re.search(pat, raw_text, flags=re.IGNORECASE)
@@ -125,76 +102,109 @@ def extract_powerball(raw: str) -> str:
     raise ValueError("Powerball Estimated Jackpot not found")
 
 
-def extract_mega_strict(raw: str) -> str:
-    """
-    Mega Millions parser deliberately ONLY accepts a dollar amount
-    immediately associated with 'Next Estimated Jackpot' / localized
-    equivalents. It never scans arbitrary $X Million values.
-    """
-
-    text_variants = [
-        soup_text(raw),
-        normalize_text(raw),
-    ]
-
-    # English + Italian wording (the site may be browser-translated in user view,
-    # but GitHub normally receives English; keeping both makes parser tolerant).
-    labels = [
-        r"Next\s+Estimated\s+Jackpot",
-        r"Prossimo\s+jackpot\s+stimato",
-    ]
-
-    patterns = []
-    for label in labels:
-        patterns.extend([
-            rf"{label}\s*:?\s*\$?\s*([0-9][0-9,]*(?:\.\d+)?)\s*(Billion|Million)",
-            rf"{label}\s*:?\s*\$?\s*([0-9][0-9,]{{5,}})",
-        ])
-
-    for text in text_variants:
-        for pat in patterns:
-            m = re.search(pat, text, flags=re.IGNORECASE)
-            if m:
-                unit = m.group(2) if m.lastindex and m.lastindex >= 2 else None
-                value = format_amount(m.group(1), unit)
-                print(f"Mega strict match: {value}")
-                return value
-
-    # Meta tags are allowed only if they contain the exact jackpot label.
-    soup = BeautifulSoup(raw, "html.parser")
-    for meta in soup.find_all("meta"):
-        content = meta.get("content") or ""
-        if not re.search(
-            r"(Next\s+Estimated\s+Jackpot|Prossimo\s+jackpot\s+stimato)",
-            content,
-            flags=re.IGNORECASE,
-        ):
-            continue
-
-        for pat in patterns:
-            m = re.search(pat, normalize_text(content), flags=re.IGNORECASE)
-            if m:
-                unit = m.group(2) if m.lastindex and m.lastindex >= 2 else None
-                value = format_amount(m.group(1), unit)
-                print(f"Mega strict meta match: {value}")
-                return value
-
-    raise ValueError("Mega Millions 'Next Estimated Jackpot' not found")
-
-
-def get_from_sources(sources, parser, label: str) -> str:
+def get_powerball() -> str:
     errors = []
-    for source_name, url in sources:
+    for label, url in [
+        ("Powerball.com", POWERBALL_URL),
+        ("NY Lottery Powerball", POWERBALL_FALLBACK),
+    ]:
         try:
-            value = parser(fetch(url))
-            print(f"SUCCESS {source_name}: {value}")
+            value = extract_powerball(fetch_html(url))
+            print(f"SUCCESS {label}: {value}")
             return value
         except Exception as exc:
-            msg = f"{source_name}: {exc}"
+            msg = f"{label}: {exc}"
             print(f"WARNING {msg}", file=sys.stderr)
             errors.append(msg)
-
     raise RuntimeError(" | ".join(errors))
+
+
+def get_mega_millions() -> str:
+    print(f"POST: {MEGA_ENDPOINT}")
+
+    headers = dict(HEADERS)
+    headers.update({
+        "Content-Type": "application/json",
+        "Accept": "application/json, text/javascript, */*; q=0.01",
+        "Origin": "https://www.megamillions.com",
+        "Referer": "https://www.megamillions.com/",
+        "X-Requested-With": "XMLHttpRequest",
+    })
+
+    response = requests.post(
+        MEGA_ENDPOINT,
+        headers=headers,
+        data="",
+        timeout=TIMEOUT,
+    )
+
+    print(
+        f"HTTP {response.status_code} | "
+        f"{len(response.content)} bytes | "
+        f"encoding={response.headers.get('Content-Encoding')}"
+    )
+    response.raise_for_status()
+
+    raw = response.content
+
+    # requests usually decompresses gzip automatically. This is only a
+    # defensive fallback for servers/proxies returning raw gzip bytes.
+    if raw[:2] == b"\x1f\x8b":
+        raw = gzip.decompress(raw)
+
+    text = raw.decode(response.encoding or "utf-8", errors="replace")
+    outer = json.loads(text)
+
+    # ASP.NET ASMX commonly returns {"d": "<JSON string>"}
+    payload = outer.get("d", outer) if isinstance(outer, dict) else outer
+
+    # Some representations may wrap it as {"string":{"#text":"..."}}
+    if isinstance(payload, dict) and "string" in payload:
+        string_obj = payload["string"]
+        if isinstance(string_obj, dict) and "#text" in string_obj:
+            payload = string_obj["#text"]
+
+    if isinstance(payload, str):
+        payload = json.loads(payload)
+
+    if not isinstance(payload, dict):
+        raise ValueError(f"Unexpected Mega Millions payload type: {type(payload).__name__}")
+
+    jackpot = payload.get("Jackpot") or payload.get("jackpot")
+    if not isinstance(jackpot, dict):
+        raise ValueError("Mega Millions payload has no Jackpot object")
+
+    next_pool = (
+        jackpot.get("NextPrizePool")
+        or jackpot.get("nextPrizePool")
+        or jackpot.get("NextPrizeAmount")
+    )
+
+    if next_pool is None:
+        raise ValueError(
+            "Mega Millions Jackpot object has no NextPrizePool. "
+            f"Available keys: {list(jackpot.keys())}"
+        )
+
+    # Endpoint historically returns a numeric full-dollar value.
+    if isinstance(next_pool, (int, float)):
+        value = format_amount(str(next_pool), None)
+    else:
+        s = str(next_pool).strip()
+
+        # Accept "$100 Million" if API format has changed.
+        m = re.search(
+            r"\$?\s*([0-9][0-9,]*(?:\.\d+)?)\s*(Billion|Million)",
+            s,
+            flags=re.IGNORECASE,
+        )
+        if m:
+            value = format_amount(m.group(1), m.group(2))
+        else:
+            value = format_amount(s, None)
+
+    print(f"SUCCESS MegaMillions official API: {value}")
+    return value
 
 
 def load_data() -> dict:
@@ -221,16 +231,12 @@ def main() -> int:
     fresh_mm = None
 
     try:
-        fresh_pb = get_from_sources(
-            POWERBALL_SOURCES, extract_powerball, "Powerball"
-        )
+        fresh_pb = get_powerball()
     except Exception as exc:
         print(f"ERROR Powerball: {exc}", file=sys.stderr)
 
     try:
-        fresh_mm = get_from_sources(
-            MEGA_SOURCES, extract_mega_strict, "Mega Millions"
-        )
+        fresh_mm = get_mega_millions()
     except Exception as exc:
         print(f"ERROR Mega Millions: {exc}", file=sys.stderr)
 
