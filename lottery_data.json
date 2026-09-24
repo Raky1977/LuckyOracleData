@@ -1,14 +1,14 @@
 {
-  "powerball_jackpot": "$332 MILLION",
+  "powerball_jackpot": "$360 MILLION",
   "mega_jackpot": "$277 MILLION",
   "jackpots": {
-    "powerball": "$332 MILLION",
+    "powerball": "$360 MILLION",
     "mega_millions": "$277 MILLION",
     "lotto_texas": "$5.25 MILLION",
     "california_superlotto": "$7 MILLION"
   },
   "stats": {
-    "last_update": "2026-09-24T04:55:58Z",
+    "last_update": "2026-09-24T11:50:08Z",
     "hot_numbers": [
       12,
       22,
@@ -65,5 +65,5 @@
       }
     ]
   },
-  "jackpots_last_update": "2026-09-24T04:55:58Z"
+  "jackpots_last_update": "2026-09-24T11:50:08Z"
 }
